@@ -1,0 +1,26 @@
+#!/bin/bash
+
+if [ -z $1 ]
+then
+    echo "Syntax Error: ./LPDBtoEnrolledConverter.scr <LPDB.csv>"
+    exit 1
+fi
+
+echo '<event teamSize="1">'
+echo '  <teams>'
+skipHeader="0"
+while IFS=$',\r' read firstName lastName dciNumber 
+do
+    if [ "${skipHeader}" == "0" ]
+    then 
+        skipHeader="1"
+        continue
+    fi
+    echo "    <team name=\"${lastName}, ${firstName}\">"
+    echo '      <players>'
+    echo "        <player dciNumber=\"${dciNumber}\" />"
+    echo '      </players>'
+    echo '    </team>'
+done < $1
+echo '  </teams>'
+echo '</event>'
