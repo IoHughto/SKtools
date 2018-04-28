@@ -1,0 +1,22 @@
+{
+  "name": "sktools",
+  "version": "1.0.0",
+  "description": "Random assortment of scripts useful for scorekeeping",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "commander": "^2.14.1",
+    "fs": "0.0.1-security",
+    "xml2js": "^0.4.19"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JoeHughto/SKtools.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JoeHughto/SKtools/issues"
+  },
+  "homepage": "https://github.com/JoeHughto/SKtools#readme"
+}
