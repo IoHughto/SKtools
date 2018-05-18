@@ -17,7 +17,7 @@ const walkSync = function(dir, filelist) {
             filelist = walkSync(dir + '/' + file, filelist);
         }
         else {
-            if(file.endsWith("wer")) {
+            if(file.endsWith("wer") || file.endsWith("json")) {
                 filelist.push(dir + '/' + file);
             }
         }
@@ -30,20 +30,37 @@ const players = [];
 walkSync(args[0],werFiles);
 
 for (let file in werFiles) {
-    const xml = fs.readFileSync(werFiles[file], 'utf-8');
-    let $ = cheerio.load(xml, {
-        xmlMode: true
-    });
+    const fileData = fs.readFileSync(werFiles[file], 'utf-8');
+    if(werFiles[file].endsWith("wer")) {
+        let $ = cheerio.load(fileData, {
+            xmlMode: true
+        });
 
-    $('person').each(function (i, err) {
-        players[$(this).attr('id')] = {
-            dci: $(this).attr('id'),
-            first: $(this).attr('first'),
-            last: $(this).attr('last'),
-            middle: $(this).attr('middle'),
-            country: $(this).attr('country')
-        };
-    });
+        $('person').each(function (i, err) {
+            players[$(this).attr('id')] = {
+                dci: $(this).attr('id'),
+                first: $(this).attr('first'),
+                last: $(this).attr('last'),
+                middle: $(this).attr('middle'),
+                country: $(this).attr('country')
+            };
+        });
+    } else {
+        const event = JSON.parse(fileData);
+        if(event.hasOwnProperty('data') && event.data.hasOwnProperty('Persons')) {
+            const persons =  event.data.Persons;
+            for(let i = 0; i < persons.length; i++) {
+                const person = {
+                    'dci' : persons[i].hasOwnProperty('DCI') ? persons[i].DCI : 0,
+                    'first' : persons[i].hasOwnProperty('FirstName') ? persons[i].FirstName : "",
+                    'last' : persons[i].hasOwnProperty('LastName') ? persons[i].LastName : "",
+                    'middle' : persons[i].hasOwnProperty('MiddleName') ? persons[i].MiddleName : "",
+                    'country' : persons[i].hasOwnProperty('Country') ? persons[i].Country : "",
+                };
+                players[person.dci] = person;
+            }
+        }
+    }
 }
 
 
